@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/octo-shark/Proxy-Server/issues"
   },
-  "homepage": "https://github.com/octo-shark/Proxy-Server#readme"
+  "homepage": "https://github.com/octo-shark/Proxy-Server#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
 }
