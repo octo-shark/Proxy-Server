@@ -1,0 +1,19 @@
+{
+  "name": "proxyserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "proxyserver.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/octo-shark/Proxy-Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/octo-shark/Proxy-Server/issues"
+  },
+  "homepage": "https://github.com/octo-shark/Proxy-Server#readme"
+}
