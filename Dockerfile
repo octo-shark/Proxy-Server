@@ -1,6 +1,6 @@
 # Dockerfile for proxy server
 
-FROM node:11.1.0
+FROM node:11.1.0-alpine
 
 WORKDIR /app
 COPY package.json /app
