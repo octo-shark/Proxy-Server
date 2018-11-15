@@ -4,21 +4,14 @@
   "description": "",
   "main": "proxyserver.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/octo-shark/Proxy-Server.git"
+    "start": "node proxyserver.js",
+    "dev": "nodemon proxyserver.js"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/octo-shark/Proxy-Server/issues"
-  },
-  "homepage": "https://github.com/octo-shark/Proxy-Server#readme",
   "dependencies": {
-    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "request": "^2.88.0"
   }
 }
