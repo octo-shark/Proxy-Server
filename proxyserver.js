@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const request = require('request');
+const {host} = require('./config');
 
 const app = express();
 const port = 80;
@@ -9,7 +10,7 @@ app.use(bodyparser.urlencoded({extended: false}));
 app.use(bodyparser.json())
 
 app.get('/:userID/timestamps', (req, res) => {
-  request.get(`http://127.0.0.1:4898/api/db/${req.params.userID}`, (err, data) => {
+  request.get(`http://${host}:4898/api/db/${req.params.userID}`, (err, data) => {
     if(err){
       res.status(500).send(err);
     } else {
@@ -21,7 +22,7 @@ app.get('/:userID/timestamps', (req, res) => {
 app.post('/:userID/timestamps', (req, res) => {
   // console.log(req)
   request.post({
-    url: `http://127.0.0.1:4898/api/db`,
+    url: `http://${host}:4898/api/db`,
     form: {
       user_id: req.body.user_id,
       activity_id: req.body.activity_id,
