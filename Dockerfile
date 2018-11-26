@@ -7,6 +7,6 @@ COPY package.json /app
 RUN npm install
 COPY . /app
 
-CMD node proxyserver.js
+CMD npm start
 
 EXPOSE 80
