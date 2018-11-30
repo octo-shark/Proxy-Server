@@ -11,7 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "connect-ensure-login": "^0.1.1",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
     "request": "^2.88.0"
   }
 }
