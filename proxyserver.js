@@ -26,7 +26,7 @@ passport.use(
     request.get({
       url: `http://localhost:5588/users/${profile.id}`,
       form: {
-        email: profile.id,
+        googleID: profile.id,
         username: profile.displayName,
         password: 'default'
       }
@@ -81,7 +81,7 @@ app.get("/:userID", (req, res) => {
 });
 
 app.post("/newUser", (req, res) => {
-//request.get, see if the profile.id (user email) is in the db, 
+//request.get, see if the profile.id (user googleID) is in the db, 
   //get and return profile and activity set
 //else it isnt then execute the post request.
   //create new user, create new defualt set of activities [0,1,2,3,4,5,6,7]
@@ -89,7 +89,7 @@ app.post("/newUser", (req, res) => {
     {
       url: `http://${postgresURL}/users/newUser`,
       form: {
-        email: req.body.email,
+        googleID: req.body.googleID,
         username: req.body.username,
         password: req.body.password
       }
@@ -176,7 +176,7 @@ app.get('/profile', require("connect-ensure-login").ensureLoggedIn(), (req, res)
 })
 
 app.get('/auth/google', passport.authenticate('google', {
-  scope: ['profile', 'email']
+  scope: ['profile']
 }));
 
 app.get('/logout', (req, res) =>{
