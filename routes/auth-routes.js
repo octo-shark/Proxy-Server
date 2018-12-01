@@ -22,8 +22,6 @@ router.get('/google', passport.authenticate('google', {
 // callback route for google to redirect to
 // hand control to passport to use code to grab profile info
 router.get('/google/return', passport.authenticate('google', {failureRedirect: '/'}), (req, res) => {
-    // res.send(req.user);
-    // console.log('Inside the callback route: ',req.user)
     res.redirect('/profile');
 });
 
