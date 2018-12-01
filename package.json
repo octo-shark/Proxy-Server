@@ -4,7 +4,7 @@
   "description": "",
   "main": "proxyserver.js",
   "scripts": {
-    "start": "node proxyserver.js",
+    "start": "nodemon proxyserver.js",
     "dev": "nodemon proxyserver.js"
   },
   "author": "",
@@ -12,6 +12,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "connect-ensure-login": "^0.1.1",
+    "cookie-session": "^1.3.2",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "passport": "^0.4.0",

@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyparser = require("body-parser");
 const request = require("request");
+const cookieSession = require('cookie-session');
 
 const { mongoURL } = require("./config");
 const { postgresURL } = require("./config");
+const profileRoutes = require('./routes/profile-routes')
+const authRoutes = require('./routes/auth-routes')
 
 const app = express();
 const port = 3000;
@@ -11,16 +14,27 @@ const port = 3000;
 const URL = "localhost";
 
 const passport = require("passport");
-var GoogleStrategy = require("passport-google-oauth20").Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const token = require("./config.js");
 
 app.set('view engine', 'ejs')
+
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: ['Memes are cool']
+}))
+
+app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
+
+app.use(passport.initialize())
+app.use(passport.session());
 
 passport.use(
   new GoogleStrategy({
       clientID: token.TOKEN.id,
       clientSecret: token.TOKEN.secret,
-      callbackURL: "http://localhost:3000/auth/google/return"
+      callbackURL: "/auth/google/return"
     },
     function(accessToken, refreshToken, profile, done) {
     request.get({
@@ -28,33 +42,30 @@ passport.use(
       form: {
         googleID: profile.id,
         username: profile.displayName,
-        password: 'default'
       }
-    }, (err, data) =>{
+    }, (err, user) =>{
       if(err){
         console.log('Didnt find user when trying to login: ', err);
           done(err, null)
       }
-      console.log('found User!: ', data)
-      done(null, data)  
+      // console.log('found User!: ', user)
+      done(null, user)
     })
   })
 );
 
 passport.serializeUser((user, cb) => {
-  cb(null, user); // Fix Me // Hook up to DB
+  // console.log('Serializeing User: ',JSON.parse(user.body).user.googleID)
+  cb(null, JSON.parse(user.body)); // Fix Me // Hook up to DB?
 });
 
-passport.deserializeUser((obj, cb) => {
-  cb(null, obj);
+passport.deserializeUser((id, cb) => {
+  // console.log("deserializeUser: ", id)
+
+  cb(null, id);
 });
 
-app.use(passport.initialize());
-app.use(passport.session());
 
-
-app.use(bodyparser.urlencoded({ extended: false }));
-app.use(bodyparser.json());
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -65,10 +76,17 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
+
+app.get('/meme', (req, res) =>{
+  res.render("home", {user: req.user})
+})
+
 // Postgres         
 app.get("/:userID", (req, res) => {
   request.get(
-    `http://${postgresURL}/users/${req.params.userID}`,        //FIX ME, uncomment this
+    `http://${postgresURL}/users/${req.params.userID}`,        
     (err, data) => {
       if (err) {
         //console.log(err);
@@ -91,7 +109,6 @@ app.post("/newUser", (req, res) => {
       form: {
         googleID: req.body.googleID,
         username: req.body.username,
-        password: req.body.password
       }
     },
     (err, data) => {
@@ -155,34 +172,23 @@ app.get(
   (req, res) => {}
 );
 
-app.get(
-  "/auth/google/return",
-  passport.authenticate("google", { failureRedirect: "/auth/login" }),
-  (req, res) => {
-    res.redirect("/home");
-  }
-);
+// app.get(
+//   "/auth/google/return",
+//   passport.authenticate("google", { failureRedirect: "/auth/login" }),
+//   (req, res) => {
+//     res.redirect("/home");
+//   }
+// );
 
-app.get("/login", (req, res) => {
-  res.render('login', {user: req.user})
-});
 
-app.get('/home', require("connect-ensure-login").ensureLoggedIn(), (req,res) => {
+// app.get('/auth/google', passport.authenticate('google', {
+//   scope: ['profile']
+// }));
+
+app.get('/', (req, res) => {
   res.render('home', { user: req.user })
 })
 
-app.get('/profile', require("connect-ensure-login").ensureLoggedIn(), (req, res) => {
-  res.render("profile", {user: req.user})
-})
-
-app.get('/auth/google', passport.authenticate('google', {
-  scope: ['profile']
-}));
-
-app.get('/logout', (req, res) =>{
-  req.logout();
-  res.redirect('/');
-})
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
