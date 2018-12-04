@@ -9,10 +9,13 @@ let user
 
 // auth logout
 router.get('/logout', (req, res) => {
-    req.logout();
-    console.log('logging out')
+    req.session.destroy((err) =>{
+        console.log('redirecting')
+        res.redirect('/')
+        res.end()
+    })
     // res.redirect('/');
-    res.end();
+    // res.end();
 });
 
 // auth with google+

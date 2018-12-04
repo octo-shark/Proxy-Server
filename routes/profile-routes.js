@@ -26,9 +26,7 @@ router.get("/:userID", (req, res) => {
     );
 });
 
-router.get("/:userID/timestamps",
-require("connect-ensure-login").ensureLoggedIn(),
-  (req, res) => {
+router.get("/:userID/timestamps",(req, res) => {
     request.get(
       `http://${mongoURL}/api/db/${req.params.userID}`,
       (err, data) => {
@@ -43,9 +41,7 @@ require("connect-ensure-login").ensureLoggedIn(),
 });
 
 router.post(
-    "/:userID/timestamps",          ///profile/:userID
-    require("connect-ensure-login").ensureLoggedIn(),
-    (req, res) => {
+    "/:userID/timestamps", (req, res) => {
       request.post(
         {
           url: `http://${mongoURL}/api/db`,
@@ -69,8 +65,7 @@ router.post(
   );
 
   router.get(
-    "/:userID/activities",
-    require("connect-ensure-login").ensureLoggedIn(),   //Empty get request??
+    "/:userID/activities",   //Empty get request??
     (req, res) => {
       //Put stuff
     }
