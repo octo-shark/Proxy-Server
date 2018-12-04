@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyparser = require("body-parser");
 const request = require("request");
-const cookieSession = require('cookie-session');
+const cookieSession = require('express-session');
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const cors = require('cors');
@@ -20,7 +20,10 @@ app.set('view engine', 'ejs')
 
 app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
-  keys: ['TimeShark']
+  keys: ['TimeShark'],
+  resave: false,
+  secret: 'TimeShark',
+  name: 'session'
 }))
 app.use(cors());
 
@@ -30,36 +33,36 @@ app.use(bodyparser.json());
 app.use(passport.initialize())
 app.use(passport.session());
 
-// passport.use(
-//   new GoogleStrategy({
-//       clientID: token.TOKEN.id,
-//       clientSecret: token.TOKEN.secret,
-//       callbackURL: "/auth/google/return"
-//     },
-//     function(accessToken, refreshToken, profile, done) {
-//       console.log('lmao Function')
-//     request.get({
-//       url: `http://localhost:5588/users/${profile.id}`,
-//       form: {
-//         googleID: profile.id,
-//         username: profile.displayName,
-//       }
-//     }, (err, user) =>{
-//       if(err){
-//           done(err, null)
-//       }
-//       done(null, user)
-//     })
-//   })
-// );
+passport.use(
+  new GoogleStrategy({
+      clientID: token.TOKEN.id,
+      clientSecret: token.TOKEN.secret,
+      callbackURL: "/auth/google/return"
+    },
+    function(accessToken, refreshToken, profile, done) {
+      request.get({
+        url: `http://localhost:5588/users/${profile.id}`,
+        form: {
+          googleID: profile.id,
+          username: profile.displayName,
+        }
+      }, (err, user) =>{
+        if(err){
+            done(err, null)
+        }
+        done(null, user)
+      })
+    })
+);
 
-// passport.serializeUser((user, cb) => {
-//   cb(null, JSON.parse(user.body)); 
-// });
+passport.serializeUser((user, cb) => {
+  console.log("UserBody",user.body);
+  cb(null, JSON.parse(user.body)); 
+});
 
-// passport.deserializeUser((id, cb) => {
-//   cb(null, id);
-// });
+passport.deserializeUser((id, cb) => {
+  cb(null, id);
+});
 
 
 
@@ -73,7 +76,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/auth', authRoutes);
-app.use('/profile', profileRoutes);
+app.use('/profile', require("connect-ensure-login").ensureLoggedIn(),profileRoutes);
 
 // Postgres-userDB    
 app.get("/:userID", (req, res) => {
