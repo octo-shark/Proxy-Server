@@ -4,6 +4,8 @@ const request = require("request");
 const cookieSession = require('cookie-session');
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const cors = require('cors');
+
 
 const { mongoURL } = require("./config");
 const { postgresURL } = require("./config");
@@ -12,7 +14,7 @@ const profileRoutes = require('./routes/profile-routes')
 const token = require("./config.js");
 
 const app = express();
-const port = 3000;
+const port = 4321;
 
 app.set('view engine', 'ejs')
 
@@ -20,6 +22,7 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
   keys: ['TimeShark']
 }))
+app.use(cors());
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
@@ -27,35 +30,36 @@ app.use(bodyparser.json());
 app.use(passport.initialize())
 app.use(passport.session());
 
-passport.use(
-  new GoogleStrategy({
-      clientID: token.TOKEN.id,
-      clientSecret: token.TOKEN.secret,
-      callbackURL: "/auth/google/return"
-    },
-    function(accessToken, refreshToken, profile, done) {
-    request.get({
-      url: `http://localhost:5588/users/${profile.id}`,
-      form: {
-        googleID: profile.id,
-        username: profile.displayName,
-      }
-    }, (err, user) =>{
-      if(err){
-          done(err, null)
-      }
-      done(null, user)
-    })
-  })
-);
+// passport.use(
+//   new GoogleStrategy({
+//       clientID: token.TOKEN.id,
+//       clientSecret: token.TOKEN.secret,
+//       callbackURL: "/auth/google/return"
+//     },
+//     function(accessToken, refreshToken, profile, done) {
+//       console.log('lmao Function')
+//     request.get({
+//       url: `http://localhost:5588/users/${profile.id}`,
+//       form: {
+//         googleID: profile.id,
+//         username: profile.displayName,
+//       }
+//     }, (err, user) =>{
+//       if(err){
+//           done(err, null)
+//       }
+//       done(null, user)
+//     })
+//   })
+// );
 
-passport.serializeUser((user, cb) => {
-  cb(null, JSON.parse(user.body)); 
-});
+// passport.serializeUser((user, cb) => {
+//   cb(null, JSON.parse(user.body)); 
+// });
 
-passport.deserializeUser((id, cb) => {
-  cb(null, id);
-});
+// passport.deserializeUser((id, cb) => {
+//   cb(null, id);
+// });
 
 
 
@@ -168,6 +172,6 @@ app.get('/', (req, res) => {
 })
 
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+app.listen(3000, () => {
+  console.log(`Listening on port 3000`);
 });
