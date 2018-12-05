@@ -64,10 +64,27 @@ router.post(
     }
   );
 
-  router.get(
-    "/:userID/activities",   //Empty get request??
-    (req, res) => {
-      //Put stuff
+  router.post('/:userID/update_activity', (req, res) => {
+    request.post({
+      url: `http://${postgresURL}/api/updateActivity`,
+      form: {
+        activity_id: req.body.id,
+        activity_name: req.body.name,
+        activity_color: req.body.color
+      }
+
+    }, (err, data) => {
+      if(err){
+        console.log('an Error has occurred!: ', err)
+        res.status(500).send(err)
+      }
+      res.status(200).send(JSON.parse(data));
+
+    })
+  })
+
+  router.get("/:userID/activities", (req, res) => {
+      //Put stuff 
     }
   );
 
