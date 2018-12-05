@@ -4,14 +4,21 @@
   "description": "",
   "main": "proxyserver.js",
   "scripts": {
-    "start": "node proxyserver.js",
+    "start": "nodemon proxyserver.js",
     "dev": "nodemon proxyserver.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "connect-ensure-login": "^0.1.1",
+    "cookie-session": "^1.3.2",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
-    "request": "^2.88.0"
+    "express-session": "^1.15.6",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
+    "request": "^2.88.0",
+    "uuid": "^3.3.2"
   }
 }
