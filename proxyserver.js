@@ -19,7 +19,7 @@ app.use(cookieSession({
   secret: 'TimeShark',
   name: 'session'
 }))
-// app.use(cors());
+app.use(cors());
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
@@ -59,7 +59,7 @@ passport.use(
 );
 
 passport.serializeUser((user, cb) => {
-  console.log("UserBody",user.body);
+  // console.log("UserBody",user.body);
   cb(null, JSON.parse(user.body)); 
 });
 
@@ -94,7 +94,7 @@ app.post("/newUser", (req, res) => {
 });
 
 app.get('/login', (req, res) =>{
-  res.redirect('/auth/login')
+  res.redirect('/auth/meme')
 })
 
 app.listen(3000, () => {
