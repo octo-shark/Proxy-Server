@@ -6,7 +6,6 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const cors = require('cors');
 
-
 const authRoutes = require('./routes/auth-routes')
 const profileRoutes = require('./routes/profile-routes')
 const token = require("./config.js");
@@ -20,13 +19,22 @@ app.use(cookieSession({
   secret: 'TimeShark',
   name: 'session'
 }))
-app.use(cors());
+// app.use(cors());
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
 app.use(passport.initialize())
 app.use(passport.session());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 passport.use(
   new GoogleStrategy({
@@ -59,34 +67,8 @@ passport.deserializeUser((id, cb) => {
   cb(null, id);
 });
 
-
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
 app.use('/auth', authRoutes);
 app.use('/profile', require("connect-ensure-login").ensureLoggedIn(),profileRoutes);
-
-// Postgres-userDB    
-// app.get("/:userID", (req, res) => {
-//   request.get(
-//     `http://${postgresURL}/users/${req.params.userID}`,        
-//     (err, data) => {
-//       if (err) {
-//         console.log('error in function app.get("/:userID") ',err)
-//         res.status(500).send(err);
-//       } else {
-//         res.status(200).send(JSON.parse(data.body));
-//       }
-//     }
-//   );
-// });
 
 app.post("/newUser", (req, res) => {
 //request.get, see if the profile.id (user googleID) is in the db, 
@@ -111,62 +93,9 @@ app.post("/newUser", (req, res) => {
   );
 });
 
-// MongoDB-TimestampDB
-// app.get("/:userID/timestamps",
-// require("connect-ensure-login").ensureLoggedIn(),
-//   (req, res) => {
-//     request.get(
-//       `http://${mongoURL}/api/db/${req.params.userID}`,
-//       (err, data) => {
-//         if (err) {
-//           console.log('error in app.get("/:userID/timestamps")',err);
-//           res.status(500).send(err);
-//         } else {
-//           res.status(200).send(JSON.parse(data.body));
-//         }
-//       }
-//     );
-//   }
-// );
-
 app.get('/login', (req, res) =>{
   res.redirect('/auth/login')
 })
-
-// app.post(
-//   "/:userID/timestamps",
-//   require("connect-ensure-login").ensureLoggedIn(),
-//   (req, res) => {
-//     request.post(
-//       {
-//         url: `http://${mongoURL}/api/db`,
-//         form: {
-//           user_id: req.body.user_id,
-//           activity_id: req.body.activity_id,
-//           timestamp_start: req.body.timestamp_start,
-//           timestamp_end: req.body.timestamp_end
-//         }
-//       },
-//       (err, data) => {
-//         if (err) {
-//           console.log('error in app.post("/:userID/timestamps"): ', err);
-//           res.status(500).send(err);
-//         } else {
-//           res.status(200).send(JSON.parse(data.body));
-//         }
-//       }
-//     );
-//   }
-// );
-//
-
-// app.get(
-//   "/:userID/activities",
-//   require("connect-ensure-login").ensureLoggedIn(),   //Empty get request??
-//   (req, res) => {
-//     //Put stuff
-//   }
-// );
 
 app.listen(3000, () => {
   console.log(`Listening on port 3000`);

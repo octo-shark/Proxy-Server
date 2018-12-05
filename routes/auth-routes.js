@@ -38,7 +38,7 @@ router.get('/wait', function(req,res){
         user = null;
     }).catch(err=>{
         res.status(500)
-        .end("Error:"+JSON.stringify(err));
+        .end("Error in /wait:"+JSON.stringify(err));
     });
 })
 // callback route for google to redirect to
