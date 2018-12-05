@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const passport = require('passport');
 const uuid=require('uuid/v3');
+const { postgresURL } = require("../config");
+const request = require('request')
 
 
 
@@ -52,6 +54,27 @@ router.get('/google/return',function(req, res, next) {
     user=JSON.stringify(req.session.passport.user)
     next();
 });
+
+router.post('/update_activity', (req, res) => {
+    console.log('Req in route update_activity: ',req)
+
+    request.post({
+     url: `http://localhost:5588/users/updateActivity`,
+     form: {
+       activity_id: req.body.id,
+       activity_name: req.body.name,
+       activity_color: req.body.color
+     }
+
+   }, (err, data) => {
+     if(err){
+       console.log('an Error has occurred!: ', err)
+       res.status(500).send(err)
+     }
+     res.status(200).send(data);
+
+   })
+ })
 
 module.exports = router;
 
