@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { mongoURL } = require("../config");
-const { postgresURL } = require("../config");
+// const { postgresURL } = require("../config");
 
 
 //Not used, left for reference

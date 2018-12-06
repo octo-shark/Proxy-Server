@@ -10,7 +10,11 @@ const authRoutes = require('./routes/auth-routes')
 const profileRoutes = require('./routes/profile-routes')
 const token = require("./config.js");
 
+const {mongoURL} = require('./config');
+const {postgresURL} = require('./config');
+
 const app = express();
+const port = 80;
 
 app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
@@ -27,14 +31,14 @@ app.use(bodyparser.json());
 app.use(passport.initialize())
 app.use(passport.session());
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
 
 passport.use(
   new GoogleStrategy({
@@ -44,7 +48,7 @@ passport.use(
     },
     function(accessToken, refreshToken, profile, done) {
       request.get({
-        url: `http://localhost:5588/users/${profile.id}`,
+        url: `http://${postgresURL}/users/${profile.id}`,
         form: {
           googleID: profile.id,
           username: profile.displayName,
@@ -97,6 +101,6 @@ app.get('/login', (req, res) =>{
   res.redirect('/auth/meme')
 })
 
-app.listen(3000, () => {
-  console.log(`Listening on port 3000`);
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });

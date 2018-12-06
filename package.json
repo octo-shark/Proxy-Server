@@ -4,7 +4,7 @@
   "description": "",
   "main": "proxyserver.js",
   "scripts": {
-    "start": "nodemon proxyserver.js",
+    "start": "node proxyserver.js",
     "dev": "nodemon proxyserver.js"
   },
   "author": "",

@@ -35,7 +35,7 @@ router.get('/wait', function(req,res){
     new Promise((res,rej)=>{
         authKeys[req.session.authId]=res;
     }).then(response=>{
-        console.log('Response: ', response)
+        // console.log('Response: ', response)
         res.status(200).end(user);
         user = null;
     }).catch(err=>{
@@ -59,7 +59,7 @@ router.post('/update_activity', (req, res) => {
     console.log('Req in route update_activity: ',req)
 
     request.post({
-     url: `http://localhost:5588/users/updateActivity`,
+     url: `http://${postgresURL}/users/updateActivity`,
      form: {
        activity_id: req.body.id,
        activity_name: req.body.name,
@@ -79,13 +79,13 @@ router.post('/update_activity', (req, res) => {
  router.get("/:userID", (req, res) => {
      console.log(req);
     request.get({
-      url: `http://localhost:5588/users/loggedInUser`,
+      url: `http://${postgresURL}/users/loggedInUser`,
       form: {
         userID: parseInt(req.params.userID)
       }
     },
 
-    //   `http://localhost:5588/users/loggedInUser`,{userID: parseInt(req.params.userID)},
+    //   `http://${postgresURL}/users/loggedInUser`,{userID: parseInt(req.params.userID)},
       (err, data) => {
         if (err) {
           console.log('error in function app.get("/:userID") ',err)
