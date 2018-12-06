@@ -76,6 +76,29 @@ router.post('/update_activity', (req, res) => {
    })
  })
 
+ router.get("/:userID", (req, res) => {
+     console.log(req);
+    request.get({
+      url: `http://localhost:5588/users/loggedInUser`,
+      form: {
+        userID: parseInt(req.params.userID)
+      }
+    },
+
+    //   `http://localhost:5588/users/loggedInUser`,{userID: parseInt(req.params.userID)},
+      (err, data) => {
+        if (err) {
+          console.log('error in function app.get("/:userID") ',err)
+          res.status(500).send(err);
+        } else {
+            console.log(data.body)
+          res.status(200).send(JSON.parse(data.body));
+        }
+      }
+    );
+});
+
+
 module.exports = router;
 
 

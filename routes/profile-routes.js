@@ -12,19 +12,19 @@ const { postgresURL } = require("../config");
 //     }
 // };
 
-router.get("/:userID", (req, res) => {
-    request.get(
-      `http://${postgresURL}/users/${req.params.userID}`,        
-      (err, data) => {
-        if (err) {
-          console.log('error in function app.get("/:userID") ',err)
-          res.status(500).send(err);
-        } else {
-          res.status(200).send(JSON.parse(data.body));
-        }
-      }
-    );
-});
+// router.get("/:userID", (req, res) => {
+//     request.get(
+//       `http://${postgresURL}/users/${req.params.userID}`,        
+//       (err, data) => {
+//         if (err) {
+//           console.log('error in function app.get("/:userID") ',err)
+//           res.status(500).send(err);
+//         } else {
+//           res.status(200).send(JSON.parse(data.body));
+//         }
+//       }
+//     );
+// });
 
 router.get("/:userID/timestamps",(req, res) => {
     request.get(
