@@ -10,7 +10,6 @@ const authRoutes = require('./routes/auth-routes')
 const profileRoutes = require('./routes/profile-routes')
 const token = require("./config.js");
 
-const {mongoURL} = require('./config');
 const {postgresURL} = require('./config');
 
 const app = express();
@@ -30,15 +29,6 @@ app.use(bodyparser.json());
 
 app.use(passport.initialize())
 app.use(passport.session());
-
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
 
 passport.use(
   new GoogleStrategy({
@@ -63,7 +53,6 @@ passport.use(
 );
 
 passport.serializeUser((user, cb) => {
-  // console.log("UserBody",user.body);
   cb(null, JSON.parse(user.body)); 
 });
 
@@ -88,7 +77,6 @@ app.post("/newUser", (req, res) => {
     },
     (err, data) => {
       if (err) {
-        console.log(err);
         res.status(500).send(err);
       } else {
         res.status(200).send(JSON.parse(data.body));

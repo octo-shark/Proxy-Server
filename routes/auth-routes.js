@@ -4,20 +4,15 @@ const uuid=require('uuid/v3');
 const { postgresURL } = require("../config");
 const request = require('request')
 
-
-
 let authKeys={};
 let user
 
 // auth logout
 router.get('/logout', (req, res) => {
     req.session.destroy((err) =>{
-        console.log('redirecting')
         res.redirect('/')
         res.end()
     })
-    // res.redirect('/');
-    // res.end();
 });
 
 // auth with google+
@@ -30,12 +25,11 @@ router.get('/initLogin/:type',function(req,res) {
     req.session.authId=id;
     res.send(id);
 });
+
 router.get('/wait', function(req,res){
-    // console.log("Using ID:",req.query.id);
     new Promise((res,rej)=>{
         authKeys[req.session.authId]=res;
     }).then(response=>{
-        // console.log('Response: ', response)
         res.status(200).end(user);
         user = null;
     }).catch(err=>{
@@ -43,12 +37,11 @@ router.get('/wait', function(req,res){
         .end("Error in /wait:"+JSON.stringify(err));
     });
 })
+
 // callback route for google to redirect to
 // hand control to passport to use code to grab profile info
 router.get('/google/return', passport.authenticate('google'));
 router.get('/google/return',function(req, res, next) {
-    // console.log("SessionID:",req.session);
-    // console.log("Response from google:",{query:req.query})
     authKeys[req.session.authId]({params:req.body,query:req.query});
     res.end('<script>window.close()</script>');
     user=JSON.stringify(req.session.passport.user)
@@ -68,7 +61,6 @@ router.post('/update_activity', (req, res) => {
 
    }, (err, data) => {
      if(err){
-       console.log('an Error has occurred!: ', err)
        res.status(500).send(err)
      }
      res.status(200).send(data);
@@ -77,27 +69,21 @@ router.post('/update_activity', (req, res) => {
  })
 
  router.get("/:userID", (req, res) => {
-     console.log(req);
     request.get({
       url: `http://${postgresURL}/users/loggedInUser`,
       form: {
         userID: parseInt(req.params.userID)
       }
-    },
-
-    //   `http://${postgresURL}/users/loggedInUser`,{userID: parseInt(req.params.userID)},
+      },
       (err, data) => {
         if (err) {
-          console.log('error in function app.get("/:userID") ',err)
           res.status(500).send(err);
         } else {
-            console.log(data.body)
           res.status(200).send(JSON.parse(data.body));
         }
       }
     );
 });
-
 
 module.exports = router;
 
